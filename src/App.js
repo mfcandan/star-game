@@ -5,8 +5,8 @@ import StarsDisplay from './components/StarsDisplay';
 
 function App() {
   const [stars, setStars] = useState(utils.random(1, 9));
-  const [availableNums, setAvailableNums] = useState([1,2,3,4,5])
-  const [candidateNums, setCandidateNums] = useState([2, 3]);
+  const [availableNums, setAvailableNums] = useState(utils.range(1, 9))
+  const [candidateNums, setCandidateNums] = useState([]);
 
   const candidatesAreWrong = utils.sum(candidateNums) > stars;
 
@@ -19,6 +19,24 @@ function App() {
     }
     return 'available';   
   }
+
+  const onNumberClick = (number, currentStatus) => {
+    if (currentStatus == 'used'){
+      return;
+    }
+    const newCandidateNums = candidateNums.concat(number)
+    if(utils.sum(newCandidateNums) !== stars) {
+      setCandidateNums(newCandidateNums) 
+    }else{
+      const newAvailableNums = availableNums.filter(
+        n => !newCandidateNums.includes(n)
+      );
+      //redraw stars (from whats available)
+      setStars(utils.randomSumIn(newAvailableNums, 9))
+      setAvailableNums(newAvailableNums);
+      setCandidateNums([]);
+    }
+  } 
 
   return (
     <div className="game">
@@ -36,6 +54,7 @@ function App() {
             <PlayNumber 
               key={number} 
               number={number} 
+              onClick={onNumberClick}
               status={numberStatus(number)}  
             />
           )}
