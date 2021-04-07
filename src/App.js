@@ -2,6 +2,7 @@ import './App.css';
 import React, { useState } from 'react';
 import PlayNumber from './components/PlayNumber';
 import StarsDisplay from './components/StarsDisplay';
+import PlayAgain from './components/PlayAgain';
 
 function App() {
   const [stars, setStars] = useState(utils.random(1, 9));
@@ -9,6 +10,13 @@ function App() {
   const [candidateNums, setCandidateNums] = useState([]);
 
   const candidatesAreWrong = utils.sum(candidateNums) > stars;
+  const gameIsDone = availableNums.length === 0;
+
+  const resetGame = () => {
+    setStars(utils.random(1,9));
+    setAvailableNums(utils.range(1,9));
+    setCandidateNums([]);
+  }
 
   const numberStatus = (number) => {
     if(!availableNums.includes(number)) {
@@ -50,8 +58,10 @@ function App() {
       </div>
       <div className="body">
         <div className="left">
-          {utils.range(1, stars).map(starId =>
-            <StarsDisplay key={starId} />
+          {gameIsDone ? (
+            <PlayAgain onClick={resetGame} />
+          ) : (
+            <StarsDisplay count={stars} utils={utils}/> 
           )}
         </div>
         <div className="right">
