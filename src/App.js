@@ -4,7 +4,7 @@ import PlayNumber from './components/PlayNumber';
 import StarsDisplay from './components/StarsDisplay';
 import PlayAgain from './components/PlayAgain';
 
-function App() {
+function App(props) {
   const [stars, setStars] = useState(utils.random(1, 9));
   const [availableNums, setAvailableNums] = useState(utils.range(1, 9))
   const [candidateNums, setCandidateNums] = useState([]);
@@ -24,12 +24,6 @@ function App() {
   const gameStatus = availableNums.length === 0 
   ? 'won'
   : secondsLeft === 0 ? 'lost' : 'active'
-
-  const resetGame = () => {
-    setStars(utils.random(1,9));
-    setAvailableNums(utils.range(1,9));
-    setCandidateNums([]);
-  }
 
   const numberStatus = (number) => {
     if(!availableNums.includes(number)) {
@@ -72,7 +66,7 @@ function App() {
       <div className="body">
         <div className="left">
           {gameStatus !== 'active' ? (
-            <PlayAgain onClick={resetGame} gameStatus={gameStatus}/>
+            <PlayAgain onClick={props.startNewGame}  gameStatus={gameStatus}/>
           ) : (
             <StarsDisplay count={stars} utils={utils}/> 
           )}
@@ -83,7 +77,8 @@ function App() {
               key={number} 
               number={number} 
               onClick={onNumberClick}
-              status={numberStatus(number)}  
+              status={numberStatus(number)} 
+              colors={colors} 
             />
           )}
         </div>
